@@ -1,0 +1,1436 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MPL ワークショップアンケート</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=M+PLUS+Rounded+1c:wght@400;700;800&display=swap');
+
+  :root {
+    --bg: #0f0e17;
+    --surface: #1a1929;
+    --card: #1e1d35;
+    --card2: #262445;
+    --accent1: #f6c90e;
+    --accent2: #ff6b6b;
+    --accent3: #4ecdc4;
+    --accent4: #a78bfa;
+    --accent5: #fb923c;
+    --text: #ffffff;
+    --text-sub: #d4d0f0;
+    --muted: #a8a4c8;
+    --border: rgba(255,255,255,0.12);
+    --radius: 20px;
+    --radius-sm: 12px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'M PLUS Rounded 1c', 'Nunito', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Stars background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(1px 1px at 20% 30%, rgba(255,255,255,0.5) 0%, transparent 100%),
+      radial-gradient(1px 1px at 70% 15%, rgba(255,255,255,0.4) 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 50% 60%, rgba(255,255,255,0.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 85% 45%, rgba(255,255,255,0.5) 0%, transparent 100%),
+      radial-gradient(1px 1px at 10% 80%, rgba(255,255,255,0.3) 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 35% 90%, rgba(255,255,255,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 65% 75%, rgba(255,255,255,0.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 90% 85%, rgba(255,255,255,0.5) 0%, transparent 100%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ======= PROGRESS BAR ======= */
+  .progress-shell {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 10px 16px 8px;
+    background: rgba(15,14,23,0.9);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .progress-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+  }
+
+  .progress-label {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    color: var(--accent1);
+    text-transform: uppercase;
+  }
+
+  .progress-count {
+    font-size: 11px;
+    color: var(--muted);
+    font-weight: 700;
+  }
+
+  .progress-track {
+    height: 6px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent3), var(--accent1));
+    border-radius: 99px;
+    transition: width 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    width: 0%;
+  }
+
+  /* ======= SECTION TABS ======= */
+  .section-tabs {
+    position: fixed;
+    top: 52px; left: 0; right: 0;
+    z-index: 99;
+    display: flex;
+    gap: 4px;
+    padding: 6px 12px;
+    background: rgba(15,14,23,0.85);
+    backdrop-filter: blur(8px);
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .section-tabs::-webkit-scrollbar { display: none; }
+
+  .tab {
+    flex-shrink: 0;
+    padding: 4px 10px;
+    border-radius: 99px;
+    font-size: 10px;
+    font-weight: 800;
+    border: 1.5px solid transparent;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: transparent;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .tab.active {
+    background: var(--accent4);
+    color: #fff;
+    border-color: var(--accent4);
+  }
+  .tab.done {
+    border-color: var(--accent3);
+    color: var(--accent3);
+  }
+  .tab .tab-check { font-size: 9px; }
+
+  /* ======= LAYOUT ======= */
+  .container {
+    position: relative;
+    z-index: 1;
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 116px 16px 120px;
+  }
+
+  /* ======= HERO ======= */
+  .hero {
+    text-align: center;
+    padding: 32px 20px 40px;
+    margin-bottom: 8px;
+    background: linear-gradient(180deg, rgba(15,14,23,0.98) 0%, rgba(26,25,41,0.95) 100%);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+  }
+
+  .hero-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--accent4), var(--accent3));
+    color: white;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    padding: 5px 14px;
+    border-radius: 99px;
+    margin-bottom: 16px;
+    text-transform: uppercase;
+  }
+
+  .hero h1 {
+    font-size: clamp(24px, 6vw, 32px);
+    font-weight: 900;
+    line-height: 1.3;
+    margin-bottom: 12px;
+    color: #ffffff;
+    text-shadow: 0 0 40px rgba(246,201,14,0.5), 0 2px 8px rgba(0,0,0,0.8);
+  }
+
+  .hero p {
+    font-size: 15px;
+    color: #d4d0f0;
+    line-height: 1.8;
+    font-weight: 600;
+  }
+
+  /* ======= SECTION CARD ======= */
+  .section-block {
+    margin-bottom: 12px;
+    border-radius: var(--radius);
+    overflow: hidden;
+    border: 1px solid var(--border);
+    background: var(--card);
+    display: none;
+    animation: slideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .section-block.active { display: block; }
+
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(24px) scale(0.97); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 18px 20px 14px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-icon {
+    font-size: 28px;
+    line-height: 1;
+    flex-shrink: 0;
+  }
+
+  .section-title {
+    font-size: 16px;
+    font-weight: 900;
+    color: #ffffff;
+  }
+
+  .section-subtitle {
+    font-size: 12px;
+    color: var(--text-sub);
+    margin-top: 2px;
+    font-weight: 600;
+  }
+
+  /* ======= QUESTION ======= */
+  .question {
+    padding: 20px 20px 0;
+  }
+
+  .question:last-child { padding-bottom: 20px; }
+
+  .q-number {
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    color: var(--accent4);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .q-number .q-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent4);
+  }
+  .q-number.required-q::after {
+    content: '★';
+    color: var(--accent2);
+    font-size: 9px;
+  }
+
+  .q-text {
+    font-size: 16px;
+    font-weight: 800;
+    line-height: 1.5;
+    margin-bottom: 14px;
+    color: #ffffff;
+  }
+
+  .q-divider {
+    height: 1px;
+    background: var(--border);
+    margin: 20px 0 0;
+  }
+
+  /* ======= RADIO CARDS ======= */
+  .radio-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .radio-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    border-radius: var(--radius-sm);
+    border: 2px solid rgba(255,255,255,0.07);
+    cursor: pointer;
+    transition: all 0.18s;
+    background: rgba(255,255,255,0.03);
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .radio-card:hover { border-color: rgba(255,255,255,0.15); background: rgba(255,255,255,0.06); }
+
+  .radio-card input[type="radio"] { display: none; }
+
+  .radio-dot {
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.2);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.2s;
+    background: transparent;
+  }
+  .radio-dot::after {
+    content: '';
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--accent1);
+    transform: scale(0);
+    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .radio-card input:checked ~ .radio-dot {
+    border-color: var(--accent1);
+    background: rgba(246,201,14,0.1);
+  }
+  .radio-card input:checked ~ .radio-dot::after { transform: scale(1); }
+
+  .radio-card:has(input:checked) {
+    border-color: var(--accent1);
+    background: rgba(246,201,14,0.06);
+  }
+
+  .radio-label {
+    font-size: 14px;
+    font-weight: 700;
+    color: #ffffff;
+    line-height: 1.4;
+  }
+
+  /* ======= CHECKBOX CARDS ======= */
+  .check-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .check-chip {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 9px 14px;
+    border-radius: 99px;
+    border: 2px solid rgba(255,255,255,0.15);
+    cursor: pointer;
+    transition: all 0.18s;
+    background: rgba(255,255,255,0.05);
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .check-chip input[type="checkbox"] { display: none; }
+  .check-chip .chip-icon { font-size: 16px; }
+  .check-chip .chip-label { font-size: 13px; font-weight: 700; color: #ffffff; }
+
+  .check-chip:hover { border-color: rgba(255,255,255,0.2); }
+  .check-chip:has(input:checked) {
+    border-color: var(--accent3);
+    background: rgba(78,205,196,0.12);
+    color: var(--accent3);
+  }
+  .check-chip.limit-warn {
+    opacity: 0.4;
+    pointer-events: none;
+  }
+  .check-chip:has(input:checked).limit-warn {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* ======= EMOTION CHIPS (large) ======= */
+  .emotion-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+
+  .emo-chip {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 14px 8px;
+    border-radius: 16px;
+    border: 2px solid rgba(255,255,255,0.15);
+    cursor: pointer;
+    transition: all 0.2s;
+    background: rgba(255,255,255,0.05);
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    text-align: center;
+    min-height: 72px;
+  }
+  .emo-chip input { display: none; }
+  .emo-chip .emo-icon { font-size: 26px; line-height: 1; }
+  .emo-chip .emo-label { font-size: 12px; font-weight: 800; color: #ffffff; }
+
+  .emo-chip:hover { transform: scale(1.04); }
+  .emo-chip:has(input:checked) {
+    border-color: var(--accent1);
+    background: rgba(246,201,14,0.1);
+    transform: scale(1.06);
+  }
+  .emo-chip.limit-warn {
+    opacity: 0.35;
+    pointer-events: none;
+  }
+  .emo-chip:has(input:checked).limit-warn {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* Radio emotion chips */
+  .emo-chip:has(input[type="radio"]:checked) {
+    border-color: var(--accent2);
+    background: rgba(255,107,107,0.12);
+    box-shadow: 0 0 20px rgba(255,107,107,0.3);
+  }
+
+  /* Selected count badge */
+  .limit-info {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 800;
+    color: var(--text-sub);
+    margin-bottom: 10px;
+  }
+  .limit-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 20px; height: 20px;
+    border-radius: 99px;
+    background: rgba(255,255,255,0.1);
+    color: var(--text);
+    font-size: 11px;
+    font-weight: 900;
+    padding: 0 5px;
+    transition: all 0.2s;
+  }
+  .limit-badge.maxed {
+    background: var(--accent3);
+    color: #000;
+    transform: scale(1.1);
+  }
+
+  /* ======= SCALE ======= */
+  .scale-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .scale-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--text-sub);
+    font-weight: 700;
+    padding: 0 2px;
+  }
+
+  .scale-dots {
+    display: flex;
+    gap: 6px;
+    justify-content: space-between;
+  }
+
+  .scale-option {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .scale-option input { display: none; }
+
+  .scale-circle {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.2);
+    background: rgba(255,255,255,0.07);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px;
+    font-weight: 900;
+    color: #ffffff;
+    transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .scale-option:has(input:checked) .scale-circle {
+    border-color: var(--accent5);
+    background: rgba(251,146,60,0.15);
+    color: var(--accent5);
+    transform: scale(1.15);
+    box-shadow: 0 0 16px rgba(251,146,60,0.3);
+  }
+
+  /* ======= TEXTAREA ======= */
+  .text-input, .textarea-input {
+    width: 100%;
+    background: rgba(255,255,255,0.1);
+    border: 2px solid rgba(255,255,255,0.2);
+    border-radius: var(--radius-sm);
+    color: #ffffff;
+    font-family: 'M PLUS Rounded 1c', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    padding: 12px 14px;
+    outline: none;
+    transition: border-color 0.2s, background 0.2s;
+    resize: none;
+  }
+  .text-input { height: 46px; }
+  .textarea-input { height: 90px; }
+
+  .text-input::placeholder, .textarea-input::placeholder { color: var(--muted); font-weight: 600; }
+  .text-input:focus, .textarea-input:focus {
+    border-color: var(--accent4);
+    background: rgba(167,139,250,0.1);
+  }
+
+  /* ======= NAV BUTTONS ======= */
+  .nav-bar {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 12px 16px 20px;
+    background: rgba(15,14,23,0.92);
+    backdrop-filter: blur(12px);
+    border-top: 1px solid var(--border);
+    display: flex;
+    gap: 10px;
+  }
+
+  .btn {
+    flex: 1;
+    padding: 14px;
+    border-radius: var(--radius-sm);
+    font-family: 'M PLUS Rounded 1c', sans-serif;
+    font-size: 15px;
+    font-weight: 900;
+    cursor: pointer;
+    border: none;
+    transition: all 0.18s;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .btn-prev {
+    background: rgba(255,255,255,0.07);
+    color: var(--muted);
+    flex: 0 0 auto;
+    width: 52px;
+    padding: 14px 0;
+    font-size: 18px;
+  }
+  .btn-prev:hover { background: rgba(255,255,255,0.12); }
+
+  .btn-next {
+    background: linear-gradient(135deg, var(--accent1), var(--accent5));
+    color: #111;
+  }
+  .btn-next:hover { filter: brightness(1.1); transform: translateY(-1px); }
+  .btn-next:active { transform: translateY(0); }
+
+  .btn-submit {
+    background: linear-gradient(135deg, var(--accent3), var(--accent4));
+    color: white;
+  }
+
+  /* ======= COMPLETION ======= */
+  .completion {
+    display: none;
+    text-align: center;
+    padding: 60px 20px;
+    animation: slideUp 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .completion.show { display: block; }
+
+  .completion-burst {
+    font-size: 72px;
+    margin-bottom: 20px;
+    animation: burst 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s both;
+  }
+  @keyframes burst {
+    from { transform: scale(0) rotate(-20deg); opacity: 0; }
+    to { transform: scale(1) rotate(0deg); opacity: 1; }
+  }
+
+  .completion h2 {
+    font-size: 26px;
+    font-weight: 900;
+    margin-bottom: 12px;
+    background: linear-gradient(135deg, var(--accent1), var(--accent3));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .completion p {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.8;
+  }
+
+  /* Stamp row */
+  .stamp-row {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin: 28px 0 20px;
+    flex-wrap: wrap;
+  }
+
+  .stamp {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    opacity: 0;
+    transform: scale(0) rotate(-10deg);
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .stamp.pop {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+  .stamp .stamp-icon {
+    width: 52px; height: 52px;
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px;
+    border: 2px solid rgba(255,255,255,0.12);
+  }
+  .stamp .stamp-name { font-size: 9px; font-weight: 800; color: var(--muted); }
+
+  /* ======= INLINE TEXTAREA for other ======= */
+  .other-text {
+    margin-top: 6px;
+    width: 100%;
+    display: none;
+  }
+  .other-text.show { display: block; }
+
+  /* ======= TOAST ======= */
+  .toast {
+    position: fixed;
+    bottom: 90px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--accent2);
+    color: white;
+    font-size: 13px;
+    font-weight: 800;
+    padding: 10px 20px;
+    border-radius: 99px;
+    z-index: 200;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s;
+  }
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  /* ======= ANIMATION ======= */
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+  }
+  .bounce { animation: bounce 1.2s ease-in-out infinite; }
+</style>
+</head>
+<body>
+
+<!-- Progress Bar -->
+<div class="progress-shell">
+  <div class="progress-top">
+    <span class="progress-label">🗺 冒険の進行度</span>
+    <span class="progress-count" id="progressCount">0 / 9</span>
+  </div>
+  <div class="progress-track">
+    <div class="progress-fill" id="progressFill"></div>
+  </div>
+</div>
+
+<!-- Section Tabs -->
+<div class="section-tabs" id="sectionTabs">
+  <button class="tab active" data-sec="0">🧭 基本</button>
+  <button class="tab" data-sec="1">🔭 体験</button>
+  <button class="tab" data-sec="2">💎 感情</button>
+  <button class="tab" data-sec="3">🗝 プロジェクト</button>
+  <button class="tab" data-sec="4">⚡ 行動力</button>
+  <button class="tab" data-sec="5">🚀 意向</button>
+  <button class="tab" data-sec="6">🌟 場の評価</button>
+  <button class="tab" data-sec="7">🎤 気になること</button>
+  <button class="tab" data-sec="8">✨ 最後</button>
+</div>
+
+<div class="container">
+
+  <!-- Hero -->
+  <div class="hero" id="heroBlock">
+    <div class="hero-badge">MPL Workshop Survey</div>
+    <h1>今日の冒険を<br>記録しよう！</h1>
+    <p>感じたことを教えてください。<br>正解も不正解もありません。<br>あなたの言葉だけが宝物 ✨</p>
+  </div>
+
+  <!-- ===== SECTION 0: 基本情報 ===== -->
+  <div class="section-block active" id="sec0">
+    <div class="section-header">
+      <span class="section-icon">🧭</span>
+      <div>
+        <div class="section-title">セクション1：基本情報</div>
+        <div class="section-subtitle">あなたのことを少し教えて</div>
+      </div>
+    </div>
+
+    <div class="question">
+      <div class="q-number"><span class="q-dot"></span>Q1</div>
+      <div class="q-text">ニックネーム（任意）</div>
+      <input type="text" class="text-input" id="q1" placeholder="例：みかん、そらまめ...">
+    </div>
+    <div class="q-divider"></div>
+
+    <div class="question">
+      <div class="q-number required-q"><span class="q-dot"></span>Q2</div>
+      <div class="q-text">年代は？</div>
+      <div class="radio-grid">
+        <label class="radio-card"><input type="radio" name="q2" value="10代"><span class="radio-dot"></span><span class="radio-label">10代</span></label>
+        <label class="radio-card"><input type="radio" name="q2" value="20代"><span class="radio-dot"></span><span class="radio-label">20代</span></label>
+        <label class="radio-card"><input type="radio" name="q2" value="30代"><span class="radio-dot"></span><span class="radio-label">30代</span></label>
+        <label class="radio-card"><input type="radio" name="q2" value="40代"><span class="radio-dot"></span><span class="radio-label">40代</span></label>
+        <label class="radio-card"><input type="radio" name="q2" value="50代"><span class="radio-dot"></span><span class="radio-label">50代</span></label>
+        <label class="radio-card"><input type="radio" name="q2" value="60代"><span class="radio-dot"></span><span class="radio-label">60代</span></label>
+        <label class="radio-card"><input type="radio" name="q2" value="70代以上"><span class="radio-dot"></span><span class="radio-label">70代以上</span></label>
+      </div>
+    </div>
+    <div class="q-divider"></div>
+
+    <div class="question">
+      <div class="q-number"><span class="q-dot"></span>Q3</div>
+      <div class="q-text">職種は？</div>
+      <div class="radio-grid">
+        <label class="radio-card"><input type="radio" name="q3" value="会社員"><span class="radio-dot"></span><span class="radio-label">会社員</span></label>
+        <label class="radio-card"><input type="radio" name="q3" value="フリーランス"><span class="radio-dot"></span><span class="radio-label">フリーランス / 個人事業主</span></label>
+        <label class="radio-card"><input type="radio" name="q3" value="学生"><span class="radio-dot"></span><span class="radio-label">学生</span></label>
+        <label class="radio-card"><input type="radio" name="q3" value="主婦・地域活動"><span class="radio-dot"></span><span class="radio-label">主婦 / 地域活動</span></label>
+        <label class="radio-card"><input type="radio" name="q3" value="その他"><span class="radio-dot"></span><span class="radio-label">その他</span></label>
+      </div>
+    </div>
+    <div class="q-divider"></div>
+
+    <div class="question" style="padding-bottom:20px">
+      <div class="q-number"><span class="q-dot"></span>Q4</div>
+      <div class="q-text">MPLへの参加は何回目？</div>
+      <div class="radio-grid">
+        <label class="radio-card"><input type="radio" name="q4" value="初参加"><span class="radio-dot"></span><span class="radio-label">🌱 はじめて！</span></label>
+        <label class="radio-card"><input type="radio" name="q4" value="2回目"><span class="radio-dot"></span><span class="radio-label">🌿 2回目</span></label>
+        <label class="radio-card"><input type="radio" name="q4" value="3回以上"><span class="radio-dot"></span><span class="radio-label">🌳 3回以上</span></label>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SECTION 1: 体験 ===== -->
+  <div class="section-block" id="sec1">
+    <div class="section-header">
+      <span class="section-icon">🔭</span>
+      <div>
+        <div class="section-title">セクション2：体験（今日の実感）</div>
+        <div class="section-subtitle">今日どんな時間が刺さった？</div>
+      </div>
+    </div>
+
+    <div class="question">
+      <div class="q-number required-q"><span class="q-dot"></span>Q5</div>
+      <div class="q-text">今日の中で、一番印象に残っている時間はどれ？</div>
+      <div class="radio-grid">
+        <label class="radio-card"><input type="radio" name="q5" value="自分考え"><span class="radio-dot"></span><span class="radio-label">🤔 自分のことを考えていた時間</span></label>
+        <label class="radio-card"><input type="radio" name="q5" value="他の人の話"><span class="radio-dot"></span><span class="radio-label">👂 他の人の話を聞いていた時間</span></label>
+        <label class="radio-card"><input type="radio" name="q5" value="AI壁打ち"><span class="radio-dot"></span><span class="radio-label">🤖 AIに壁打ちをしていた時間</span></label>
+        <label class="radio-card"><input type="radio" name="q5" value="誰かと話す"><span class="radio-dot"></span><span class="radio-label">💬 誰かと話していた時間</span></label>
+        <label class="radio-card"><input type="radio" name="q5" value="発表を聞く"><span class="radio-dot"></span><span class="radio-label">🎤 発表を聞いていた時間</span></label>
+        <label class="radio-card"><input type="radio" name="q5" value="交流会"><span class="radio-dot"></span><span class="radio-label">🎉 交流会</span></label>
+        <label class="radio-card"><input type="radio" name="q5" value="あまり印象なし"><span class="radio-dot"></span><span class="radio-label">😶 正直あまり印象に残っていない</span></label>
+      </div>
+    </div>
+    <div class="q-divider"></div>
+
+    <div class="question" style="padding-bottom:20px">
+      <div class="q-number required-q"><span class="q-dot"></span>Q6</div>
+      <div class="q-text">今日のワークを通じて、自分の中で起きた変化は？（複数OK）</div>
+      <div class="check-grid">
+        <label class="check-chip"><input type="checkbox" name="q6" value="やってみたい"><span class="chip-icon">🔥</span><span class="chip-label">やってみたい気持ちが出てきた</span></label>
+        <label class="check-chip"><input type="checkbox" name="q6" value="方向が見えた"><span class="chip-icon">🧭</span><span class="chip-label">なんとなく方向が見えてきた</span></label>
+        <label class="check-chip"><input type="checkbox" name="q6" value="話したくなった"><span class="chip-icon">💬</span><span class="chip-label">誰かと話したくなった</span></label>
+        <label class="check-chip"><input type="checkbox" name="q6" value="整理できた"><span class="chip-icon">🗂️</span><span class="chip-label">少し整理できた</span></label>
+        <label class="check-chip"><input type="checkbox" name="q6" value="まだよく分からない"><span class="chip-icon">🌫️</span><span class="chip-label">まだよく分からない</span></label>
+        <label class="check-chip"><input type="checkbox" name="q6" value="特に変化なし"><span class="chip-icon">😌</span><span class="chip-label">特に変化はない</span></label>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SECTION 2: 感情 ===== -->
+  <div class="section-block" id="sec2">
+    <div class="section-header">
+      <span class="section-icon">💎</span>
+      <div>
+        <div class="section-title">セクション3：内側（感情・動機）</div>
+        <div class="section-subtitle">あなたの感情を掘り下げよう</div>
+      </div>
+    </div>
+
+    <!-- Q7: 3つまで選択（上限制限） -->
+    <div class="question">
+      <div class="q-number required-q"><span class="q-dot"></span>Q7</div>
+      <div class="q-text">今回のプロジェクトの出発点にある感情を<span style="color:var(--accent1)">3つまで</span>選んでください</div>
+      <div class="limit-info">
+        選んだ数：<span class="limit-badge" id="q7Badge">0</span> / 3
+      </div>
+      <div class="emotion-grid" id="q7Grid">
+        <label class="emo-chip"><input type="checkbox" name="q7" value="ワクワク"><span class="emo-icon">✨</span><span class="emo-label">ワクワク</span></label>
+        <label class="emo-chip"><input type="checkbox" name="q7" value="好き"><span class="emo-icon">💖</span><span class="emo-label">好き</span></label>
+        <label class="emo-chip"><input type="checkbox" name="q7" value="楽しい"><span class="emo-icon">😄</span><span class="emo-label">楽しい</span></label>
+        <label class="emo-chip"><input type="checkbox" name="q7" value="嬉しい"><span class="emo-icon">🌸</span><span class="emo-label">嬉しい</span></label>
+        <label class="emo-chip"><input type="checkbox" name="q7" value="憧れ"><span class="emo-icon">🌠</span><span class="emo-label">憧れ</span></label>
+        <label class="emo-chip"><input type="checkbox" name="q7" value="怒り"><span class="emo-icon">🔥</span><span class="emo-label">怒り</span></label>
+        <label class="emo-chip"><input type="checkbox" name="q7" value="違和感"><span class="emo-icon">🌀</span><span class="emo-label">違和感</span></label>
+        <label class="emo-chip"><input type="checkbox" name="q7" value="理不尽"><span class="emo-icon">⚡</span><span class="emo-label">理不尽</span></label>
+        <label class="emo-chip"><input type="checkbox" name="q7" value="嫉妬"><span class="emo-icon">💚</span><span class="emo-label">嫉妬</span></label>
+        <label class="emo-chip"><input type="checkbox" name="q7" value="悔しさ"><span class="emo-icon">😤</span><span class="emo-label">悔しさ</span></label>
+      </div>
+      <div style="margin-top:10px">
+        <input type="text" class="text-input" name="q7_other" placeholder="その他（自由に）">
+      </div>
+    </div>
+    <div class="q-divider"></div>
+
+    <!-- Q8: 核（radio・1つだけ） -->
+    <div class="question">
+      <div class="q-number required-q"><span class="q-dot"></span>Q8</div>
+      <div class="q-text">その中で<span style="color:var(--accent2)">最も強い感情</span>を1つ選んでください</div>
+      <div class="emotion-grid" id="q8Grid">
+        <label class="emo-chip"><input type="radio" name="q8" value="ワクワク"><span class="emo-icon">✨</span><span class="emo-label">ワクワク</span></label>
+        <label class="emo-chip"><input type="radio" name="q8" value="好き"><span class="emo-icon">💖</span><span class="emo-label">好き</span></label>
+        <label class="emo-chip"><input type="radio" name="q8" value="楽しい"><span class="emo-icon">😄</span><span class="emo-label">楽しい</span></label>
+        <label class="emo-chip"><input type="radio" name="q8" value="嬉しい"><span class="emo-icon">🌸</span><span class="emo-label">嬉しい</span></label>
+        <label class="emo-chip"><input type="radio" name="q8" value="憧れ"><span class="emo-icon">🌠</span><span class="emo-label">憧れ</span></label>
+        <label class="emo-chip"><input type="radio" name="q8" value="怒り"><span class="emo-icon">🔥</span><span class="emo-label">怒り</span></label>
+        <label class="emo-chip"><input type="radio" name="q8" value="違和感"><span class="emo-icon">🌀</span><span class="emo-label">違和感</span></label>
+        <label class="emo-chip"><input type="radio" name="q8" value="理不尽"><span class="emo-icon">⚡</span><span class="emo-label">理不尽</span></label>
+        <label class="emo-chip"><input type="radio" name="q8" value="嫉妬"><span class="emo-icon">💚</span><span class="emo-label">嫉妬</span></label>
+        <label class="emo-chip"><input type="radio" name="q8" value="悔しさ"><span class="emo-icon">😤</span><span class="emo-label">悔しさ</span></label>
+      </div>
+    </div>
+    <div class="q-divider"></div>
+
+    <div class="question" style="padding-bottom:20px">
+      <div class="q-number"><span class="q-dot"></span>Q9</div>
+      <div class="q-text">その感情の背景は？（なぜそう思ったか）</div>
+      <textarea class="textarea-input" id="q9" placeholder="思ったことをそのまま..."></textarea>
+    </div>
+  </div>
+
+  <!-- ===== SECTION 3: プロジェクト定義 ===== -->
+  <div class="section-block" id="sec3">
+    <div class="section-header">
+      <span class="section-icon">🗝</span>
+      <div>
+        <div class="section-title">セクション4：プロジェクト定義</div>
+        <div class="section-subtitle">あなたのプロジェクトを言葉にしよう</div>
+      </div>
+    </div>
+
+    <div class="question">
+      <div class="q-number"><span class="q-dot"></span>Q10</div>
+      <div class="q-text">プロジェクト名</div>
+      <input type="text" class="text-input" id="q10" placeholder="名前をつけてみよう">
+    </div>
+    <div class="q-divider"></div>
+
+    <div class="question">
+      <div class="q-number"><span class="q-dot"></span>Q11</div>
+      <div class="q-text">テーマ（何をやるか）</div>
+      <input type="text" class="text-input" id="q11" placeholder="一言で">
+    </div>
+    <div class="q-divider"></div>
+
+    <div class="question">
+      <div class="q-number"><span class="q-dot"></span>Q12</div>
+      <div class="q-text">5年後どうなっていたいか</div>
+      <textarea class="textarea-input" id="q12" placeholder="自由に想像して..."></textarea>
+    </div>
+    <div class="q-divider"></div>
+
+    <div class="question">
+      <div class="q-number"><span class="q-dot"></span>Q13</div>
+      <div class="q-text">最初の一歩</div>
+      <input type="text" class="text-input" id="q13" placeholder="小さくていい">
+    </div>
+    <div class="q-divider"></div>
+
+    <div class="question" style="padding-bottom:20px">
+      <div class="q-number"><span class="q-dot"></span>Q14</div>
+      <div class="q-text">今週やること</div>
+      <input type="text" class="text-input" id="q14" placeholder="具体的に">
+    </div>
+  </div>
+
+  <!-- ===== SECTION 4: 行動可能性 ===== -->
+  <div class="section-block" id="sec4">
+    <div class="section-header">
+      <span class="section-icon">⚡</span>
+      <div>
+        <div class="section-title">セクション5：行動可能性</div>
+        <div class="section-subtitle">どのくらい動けそう？正直に！</div>
+      </div>
+    </div>
+
+    <div class="question">
+      <div class="q-number required-q"><span class="q-dot"></span>Q15</div>
+      <div class="q-text">今のプロジェクトの状態は？</div>
+      <div class="radio-grid">
+        <label class="radio-card"><input type="radio" name="q15" value="すぐに動けそう"><span class="radio-dot"></span><span class="radio-label">🚀 すぐに動けそう</span></label>
+        <label class="radio-card"><input type="radio" name="q15" value="小さくなら"><span class="radio-dot"></span><span class="radio-label">🌱 小さくなら始められそう</span></label>
+        <label class="radio-card"><input type="radio" name="q15" value="ぼんやり"><span class="radio-dot"></span><span class="radio-label">🌫️ まだ少しぼんやりしている</span></label>
+        <label class="radio-card"><input type="radio" name="q15" value="形になってない"><span class="radio-dot"></span><span class="radio-label">🔮 まだ形になっていない</span></label>
+      </div>
+    </div>
+    <div class="q-divider"></div>
+
+    <div class="question">
+      <div class="q-number required-q"><span class="q-dot"></span>Q16</div>
+      <div class="q-text">最初の一歩の難易度は？</div>
+      <div class="scale-container">
+        <div class="scale-dots">
+          <label class="scale-option"><input type="radio" name="q16" value="1"><div class="scale-circle">1</div></label>
+          <label class="scale-option"><input type="radio" name="q16" value="2"><div class="scale-circle">2</div></label>
+          <label class="scale-option"><input type="radio" name="q16" value="3"><div class="scale-circle">3</div></label>
+          <label class="scale-option"><input type="radio" name="q16" value="4"><div class="scale-circle">4</div></label>
+          <label class="scale-option"><input type="radio" name="q16" value="5"><div class="scale-circle">5</div></label>
+        </div>
+        <div class="scale-labels"><span>とても簡単</span><span>とても難しい</span></div>
+      </div>
+    </div>
+    <div class="q-divider"></div>
+
+    <div class="question">
+      <div class="q-number required-q"><span class="q-dot"></span>Q17</div>
+      <div class="q-text">今週中にできそう？</div>
+      <div class="scale-container">
+        <div class="scale-dots">
+          <label class="scale-option"><input type="radio" name="q17" value="1"><div class="scale-circle">1</div></label>
+          <label class="scale-option"><input type="radio" name="q17" value="2"><div class="scale-circle">2</div></label>
+          <label class="scale-option"><input type="radio" name="q17" value="3"><div class="scale-circle">3</div></label>
+          <label class="scale-option"><input type="radio" name="q17" value="4"><div class="scale-circle">4</div></label>
+          <label class="scale-option"><input type="radio" name="q17" value="5"><div class="scale-circle">5</div></label>
+        </div>
+        <div class="scale-labels"><span>できそう！</span><span>できなさそう</span></div>
+      </div>
+    </div>
+    <div class="q-divider"></div>
+
+    <div class="question">
+      <div class="q-number required-q"><span class="q-dot"></span>Q18</div>
+      <div class="q-text">一人でもできそう？</div>
+      <div class="scale-container">
+        <div class="scale-dots">
+          <label class="scale-option"><input type="radio" name="q18" value="1"><div class="scale-circle">1</div></label>
+          <label class="scale-option"><input type="radio" name="q18" value="2"><div class="scale-circle">2</div></label>
+          <label class="scale-option"><input type="radio" name="q18" value="3"><div class="scale-circle">3</div></label>
+          <label class="scale-option"><input type="radio" name="q18" value="4"><div class="scale-circle">4</div></label>
+          <label class="scale-option"><input type="radio" name="q18" value="5"><div class="scale-circle">5</div></label>
+        </div>
+        <div class="scale-labels"><span>できそう！</span><span>難しい</span></div>
+      </div>
+    </div>
+    <div class="q-divider"></div>
+
+    <div class="question" style="padding-bottom:20px">
+      <div class="q-number"><span class="q-dot"></span>Q19</div>
+      <div class="q-text">最初の一歩のサイズ感は？</div>
+      <div class="scale-container">
+        <div class="scale-dots">
+          <label class="scale-option"><input type="radio" name="q19" value="1"><div class="scale-circle">1</div></label>
+          <label class="scale-option"><input type="radio" name="q19" value="2"><div class="scale-circle">2</div></label>
+          <label class="scale-option"><input type="radio" name="q19" value="3"><div class="scale-circle">3</div></label>
+          <label class="scale-option"><input type="radio" name="q19" value="4"><div class="scale-circle">4</div></label>
+          <label class="scale-option"><input type="radio" name="q19" value="5"><div class="scale-circle">5</div></label>
+        </div>
+        <div class="scale-labels"><span>とても小さい</span><span>大きい</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SECTION 5: 行動意向 ===== -->
+  <div class="section-block" id="sec5">
+    <div class="section-header">
+      <span class="section-icon">🚀</span>
+      <div>
+        <div class="section-title">セクション6：行動意向</div>
+        <div class="section-subtitle">このあとどう動く？</div>
+      </div>
+    </div>
+
+    <div class="question">
+      <div class="q-number required-q"><span class="q-dot"></span>Q20</div>
+      <div class="q-text">このあと、どんな関わり方になりそう？</div>
+      <div class="radio-grid">
+        <label class="radio-card"><input type="radio" name="q20" value="すぐやる"><span class="radio-dot"></span><span class="radio-label">🔥 すぐに何かやってみたい</span></label>
+        <label class="radio-card"><input type="radio" name="q20" value="小さく様子見"><span class="radio-dot"></span><span class="radio-label">🌱 小さく様子を見ながらやりたい</span></label>
+        <label class="radio-card"><input type="radio" name="q20" value="少し時間をおく"><span class="radio-dot"></span><span class="radio-label">🌙 少し時間をおいて考えたい</span></label>
+        <label class="radio-card"><input type="radio" name="q20" value="今回だけ"><span class="radio-dot"></span><span class="radio-label">✅ 今回だけで十分</span></label>
+        <label class="radio-card"><input type="radio" name="q20" value="まだ分からない"><span class="radio-dot"></span><span class="radio-label">🌫️ まだ分からない</span></label>
+      </div>
+    </div>
+    <div class="q-divider"></div>
+
+    <div class="question">
+      <div class="q-number required-q"><span class="q-dot"></span>Q21</div>
+      <div class="q-text">今日のあと、一番近い動きは？</div>
+      <div class="radio-grid">
+        <label class="radio-card"><input type="radio" name="q21" value="小さく何かやる"><span class="radio-dot"></span><span class="radio-label">🪄 小さく何かやる</span></label>
+        <label class="radio-card"><input type="radio" name="q21" value="SNS発信"><span class="radio-dot"></span><span class="radio-label">📣 SNSで発信する</span></label>
+        <label class="radio-card"><input type="radio" name="q21" value="特に何もしない"><span class="radio-dot"></span><span class="radio-label">😴 特に何もしない</span></label>
+        <label class="radio-card"><input type="radio" name="q21" value="まだ決めてない"><span class="radio-dot"></span><span class="radio-label">🤔 まだ決めていない</span></label>
+        <label class="radio-card" id="q21OtherCard"><input type="radio" name="q21" value="その他" id="q21OtherRadio"><span class="radio-dot"></span><span class="radio-label">✏️ その他</span></label>
+      </div>
+      <div id="q21OtherWrap" style="display:none; margin-top:8px">
+        <input type="text" class="text-input" id="q21OtherText" placeholder="どんな動きをしますか？">
+      </div>
+    </div>
+    <div class="q-divider"></div>
+
+    <div class="question" style="padding-bottom:20px">
+      <div class="q-number"><span class="q-dot"></span>Q22</div>
+      <div class="q-text">このプロジェクトを誰かに話したい？</div>
+      <div class="scale-container">
+        <div class="scale-dots">
+          <label class="scale-option"><input type="radio" name="q22" value="1"><div class="scale-circle">1</div></label>
+          <label class="scale-option"><input type="radio" name="q22" value="2"><div class="scale-circle">2</div></label>
+          <label class="scale-option"><input type="radio" name="q22" value="3"><div class="scale-circle">3</div></label>
+          <label class="scale-option"><input type="radio" name="q22" value="4"><div class="scale-circle">4</div></label>
+          <label class="scale-option"><input type="radio" name="q22" value="5"><div class="scale-circle">5</div></label>
+        </div>
+        <div class="scale-labels"><span>思わない</span><span>強く思う</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SECTION 6: 場の評価 ===== -->
+  <div class="section-block" id="sec6">
+    <div class="section-header">
+      <span class="section-icon">🌟</span>
+      <div>
+        <div class="section-title">セクション7：場の評価</div>
+        <div class="section-subtitle">今日の雰囲気はどうだった？</div>
+      </div>
+    </div>
+
+    <div class="question">
+      <div class="q-number"><span class="q-dot"></span>Q23</div>
+      <div class="q-text">未完成の話でも安心して話せた</div>
+      <div class="scale-container">
+        <div class="scale-dots">
+          <label class="scale-option"><input type="radio" name="q23" value="1"><div class="scale-circle">1</div></label>
+          <label class="scale-option"><input type="radio" name="q23" value="2"><div class="scale-circle">2</div></label>
+          <label class="scale-option"><input type="radio" name="q23" value="3"><div class="scale-circle">3</div></label>
+          <label class="scale-option"><input type="radio" name="q23" value="4"><div class="scale-circle">4</div></label>
+          <label class="scale-option"><input type="radio" name="q23" value="5"><div class="scale-circle">5</div></label>
+        </div>
+        <div class="scale-labels"><span>そう思わない</span><span>強くそう思う</span></div>
+      </div>
+    </div>
+    <div class="q-divider"></div>
+
+    <div class="question">
+      <div class="q-number"><span class="q-dot"></span>Q24</div>
+      <div class="q-text">否定される不安は少なかった</div>
+      <div class="scale-container">
+        <div class="scale-dots">
+          <label class="scale-option"><input type="radio" name="q24" value="1"><div class="scale-circle">1</div></label>
+          <label class="scale-option"><input type="radio" name="q24" value="2"><div class="scale-circle">2</div></label>
+          <label class="scale-option"><input type="radio" name="q24" value="3"><div class="scale-circle">3</div></label>
+          <label class="scale-option"><input type="radio" name="q24" value="4"><div class="scale-circle">4</div></label>
+          <label class="scale-option"><input type="radio" name="q24" value="5"><div class="scale-circle">5</div></label>
+        </div>
+        <div class="scale-labels"><span>そう思わない</span><span>強くそう思う</span></div>
+      </div>
+    </div>
+    <div class="q-divider"></div>
+
+    <div class="question" style="padding-bottom:20px">
+      <div class="q-number"><span class="q-dot"></span>Q25</div>
+      <div class="q-text">この場にはリスペクトがあった</div>
+      <div class="scale-container">
+        <div class="scale-dots">
+          <label class="scale-option"><input type="radio" name="q25" value="1"><div class="scale-circle">1</div></label>
+          <label class="scale-option"><input type="radio" name="q25" value="2"><div class="scale-circle">2</div></label>
+          <label class="scale-option"><input type="radio" name="q25" value="3"><div class="scale-circle">3</div></label>
+          <label class="scale-option"><input type="radio" name="q25" value="4"><div class="scale-circle">4</div></label>
+          <label class="scale-option"><input type="radio" name="q25" value="5"><div class="scale-circle">5</div></label>
+        </div>
+        <div class="scale-labels"><span>そう思わない</span><span>強くそう思う</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SECTION 7: 気になること ===== -->
+  <div class="section-block" id="sec7">
+    <div class="section-header">
+      <span class="section-icon">🎤</span>
+      <div>
+        <div class="section-title">セクション8：気になったこと</div>
+        <div class="section-subtitle">教えてくれると、次の場づくりに活かせる</div>
+      </div>
+    </div>
+
+    <div class="question" style="padding-bottom:20px">
+      <div class="q-number"><span class="q-dot"></span>Q26</div>
+      <div class="q-text">今日の中で少し気になったことは？（複数OK）</div>
+      <div class="check-grid">
+        <label class="check-chip"><input type="checkbox" name="q26" value="聞く時間が長い"><span class="chip-icon">⏰</span><span class="chip-label">話を聞く時間が長かった</span></label>
+        <label class="check-chip"><input type="checkbox" name="q26" value="話す時間が少ない"><span class="chip-icon">🎙️</span><span class="chip-label">自分が話す時間が少なかった</span></label>
+        <label class="check-chip"><input type="checkbox" name="q26" value="内容が抽象的"><span class="chip-icon">🌫️</span><span class="chip-label">内容が抽象的だった</span></label>
+        <label class="check-chip"><input type="checkbox" name="q26" value="具体例が欲しい"><span class="chip-icon">🔍</span><span class="chip-label">具体例が欲しかった</span></label>
+        <label class="check-chip"><input type="checkbox" name="q26" value="入りづらい"><span class="chip-icon">🚪</span><span class="chip-label">初めてで入りづらかった</span></label>
+        <label class="check-chip"><input type="checkbox" name="q26" value="特にない"><span class="chip-icon">✨</span><span class="chip-label">特にない</span></label>
+      </div>
+      <div style="margin-top:10px">
+        <input type="text" class="text-input" name="q26_other" placeholder="その他（自由に）">
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SECTION 8: 一言 ===== -->
+  <div class="section-block" id="sec8">
+    <div class="section-header">
+      <span class="section-icon">✨</span>
+      <div>
+        <div class="section-title">セクション9：最後の一言</div>
+        <div class="section-subtitle">あとは一言だけ！</div>
+      </div>
+    </div>
+
+    <div class="question" style="padding-bottom:20px">
+      <div class="q-number"><span class="q-dot"></span>Q27</div>
+      <div class="q-text">今日のワークショップを一言で表すと？</div>
+      <textarea class="textarea-input" id="q27" placeholder="直感でどうぞ 🌟" style="height:110px"></textarea>
+    </div>
+  </div>
+
+  <!-- Completion -->
+  <div class="completion" id="completion">
+    <div class="completion-burst bounce">🎉</div>
+    <h2>冒険、完了！</h2>
+    <div class="stamp-row" id="stampRow">
+      <div class="stamp"><div class="stamp-icon" style="background:rgba(246,201,14,0.15)">🧭</div><div class="stamp-name">基本</div></div>
+      <div class="stamp"><div class="stamp-icon" style="background:rgba(78,205,196,0.15)">🔭</div><div class="stamp-name">体験</div></div>
+      <div class="stamp"><div class="stamp-icon" style="background:rgba(167,139,250,0.15)">💎</div><div class="stamp-name">感情</div></div>
+      <div class="stamp"><div class="stamp-icon" style="background:rgba(255,107,107,0.15)">🗝</div><div class="stamp-name">PJ</div></div>
+      <div class="stamp"><div class="stamp-icon" style="background:rgba(251,146,60,0.15)">⚡</div><div class="stamp-name">行動力</div></div>
+      <div class="stamp"><div class="stamp-icon" style="background:rgba(246,201,14,0.15)">🚀</div><div class="stamp-name">意向</div></div>
+      <div class="stamp"><div class="stamp-icon" style="background:rgba(78,205,196,0.15)">🌟</div><div class="stamp-name">場の評価</div></div>
+      <div class="stamp"><div class="stamp-icon" style="background:rgba(167,139,250,0.15)">🎤</div><div class="stamp-name">気になること</div></div>
+      <div class="stamp"><div class="stamp-icon" style="background:rgba(255,107,107,0.15)">✨</div><div class="stamp-name">一言</div></div>
+    </div>
+    <p>回答してくれてありがとう。<br>あなたの言葉が、次のMPLをもっと<br>いい場にするための宝物になります 🌟</p>
+  </div>
+
+</div>
+
+<!-- Nav Bar -->
+<div class="nav-bar" id="navBar">
+  <button class="btn btn-prev" id="btnPrev">←</button>
+  <button class="btn btn-next" id="btnNext">次へ →</button>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+  // ============================================================
+  //  ▼ GAS デプロイ後にここだけ書き換える
+  // ============================================================
+  const GAS_URL = 'YOUR_GAS_DEPLOY_URL_HERE';
+  // ============================================================
+
+  const TOTAL = 9;
+  let current = 0;
+  const completed = new Set();
+
+  const sections = Array.from({length: TOTAL}, (_, i) => document.getElementById('sec' + i));
+  const tabs = document.querySelectorAll('.tab');
+  const progressFill = document.getElementById('progressFill');
+  const progressCount = document.getElementById('progressCount');
+  const btnPrev = document.getElementById('btnPrev');
+  const btnNext = document.getElementById('btnNext');
+  const navBar = document.getElementById('navBar');
+  const toastEl = document.getElementById('toast');
+  const completionEl = document.getElementById('completion');
+  const heroBlock = document.getElementById('heroBlock');
+
+  // Q7 limit logic (3つまで)
+  const q7Grid = document.getElementById('q7Grid');
+  const q7Badge = document.getElementById('q7Badge');
+
+  function updateQ7Limit() {
+    const checked = q7Grid.querySelectorAll('input:checked');
+    const count = checked.length;
+    q7Badge.textContent = count;
+    q7Badge.classList.toggle('maxed', count >= 3);
+    q7Grid.querySelectorAll('.emo-chip').forEach(chip => {
+      const inp = chip.querySelector('input');
+      if (count >= 3 && !inp.checked) {
+        chip.classList.add('limit-warn');
+      } else {
+        chip.classList.remove('limit-warn');
+      }
+    });
+  }
+
+  q7Grid.addEventListener('change', updateQ7Limit);
+
+  // Q21 その他テキスト表示切り替え
+  document.querySelectorAll('input[name="q21"]').forEach(radio => {
+    radio.addEventListener('change', () => {
+      const wrap = document.getElementById('q21OtherWrap');
+      wrap.style.display = radio.value === 'その他' && radio.checked ? 'block' : 'none';
+    });
+  });
+
+  function showToast(msg) {
+    toastEl.textContent = msg;
+    toastEl.classList.add('show');
+    setTimeout(() => toastEl.classList.remove('show'), 2000);
+  }
+
+  function updateUI() {
+    sections.forEach((s, i) => {
+      s.classList.toggle('active', i === current);
+    });
+
+    tabs.forEach((t, i) => {
+      t.classList.toggle('active', i === current);
+      t.classList.toggle('done', completed.has(i) && i !== current);
+      t.querySelector('.tab-check') && t.querySelector('.tab-check').remove();
+      if (completed.has(i) && i !== current) {
+        const ck = document.createElement('span');
+        ck.className = 'tab-check';
+        ck.textContent = '✓';
+        t.appendChild(ck);
+      }
+    });
+
+    // Scroll tab into view
+    tabs[current].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+
+    const pct = (completed.size / TOTAL) * 100;
+    progressFill.style.width = pct + '%';
+    progressCount.textContent = completed.size + ' / ' + TOTAL;
+
+    btnPrev.style.display = current === 0 ? 'none' : 'block';
+
+    const isLast = current === TOTAL - 1;
+    btnNext.textContent = isLast ? '🎉 送信する' : '次へ →';
+    btnNext.className = 'btn ' + (isLast ? 'btn-submit' : 'btn-next');
+  }
+
+  tabs.forEach((tab, i) => {
+    tab.addEventListener('click', () => {
+      current = i;
+      updateUI();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+
+  btnPrev.addEventListener('click', () => {
+    if (current > 0) {
+      current--;
+      updateUI();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  });
+
+  btnNext.addEventListener('click', () => {
+    completed.add(current);
+
+    if (current < TOTAL - 1) {
+      current++;
+      updateUI();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      // Submit
+      submitSurvey();
+    }
+  });
+
+  // ============================================================
+  //  データ収集
+  // ============================================================
+  function collectData() {
+    const get   = id => (document.getElementById(id) || {}).value || '';
+    const radio = name => { const el = document.querySelector(`input[name="${name}"]:checked`); return el ? el.value : ''; };
+    const checks = name => Array.from(document.querySelectorAll(`input[name="${name}"]:checked`)).map(el => el.value);
+    const named  = name => { const el = document.querySelector(`input[name="${name}"]`); return el ? el.value : ''; };
+
+    // Q21: その他選択時はテキスト内容も含める
+    const q21val = radio('q21');
+    const q21final = q21val === 'その他' ? ('その他：' + get('q21OtherText')) : q21val;
+
+    return {
+      q1:  get('q1'),
+      q2:  radio('q2'),
+      q3:  radio('q3'),
+      q4:  radio('q4'),
+      q5:  radio('q5'),
+      q6:  checks('q6'),
+      q7:  checks('q7'),
+      q7_other: named('q7_other'),
+      q8:  radio('q8'),
+      q9:  get('q9'),
+      q10: get('q10'),
+      q11: get('q11'),
+      q12: get('q12'),
+      q13: get('q13'),
+      q14: get('q14'),
+      q15: radio('q15'),
+      q16: radio('q16'),
+      q17: radio('q17'),
+      q18: radio('q18'),
+      q19: radio('q19'),
+      q20: radio('q20'),
+      q21: q21final,
+      q22: radio('q22'),
+      q23: radio('q23'),
+      q24: radio('q24'),
+      q25: radio('q25'),
+      q26: checks('q26'),
+      q26_other: named('q26_other'),
+      q27: get('q27'),
+    };
+  }
+
+  // ============================================================
+  //  送信処理
+  // ============================================================
+  async function submitSurvey() {
+    completed.add(current);
+    const data = collectData();
+
+    // ---- ローディング表示 ----
+    btnNext.disabled = true;
+    btnNext.textContent = '送信中… 🌀';
+
+    // GAS URL が未設定の場合はローカルモードで動作
+    const isConfigured = GAS_URL && GAS_URL !== 'YOUR_GAS_DEPLOY_URL_HERE';
+
+    if (isConfigured) {
+      try {
+        // GAS は no-cors で POST（レスポンスは opaque だが書き込みは成功する）
+        await fetch(GAS_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data),
+        });
+        showCompletion(true);
+      } catch (err) {
+        // ネットワークエラー時もローカル保存して完了へ
+        console.error('GAS送信エラー:', err);
+        saveLocalFallback(data);
+        showCompletion(false, 'オフライン保存しました（後で再送可）');
+      }
+    } else {
+      // 開発モード: コンソールにデータ出力
+      console.log('[DEV MODE] 送信データ:', JSON.stringify(data, null, 2));
+      saveLocalFallback(data);
+      showCompletion(true);
+    }
+  }
+
+  // ============================================================
+  //  ローカル退避（送信失敗時の保険）
+  // ============================================================
+  function saveLocalFallback(data) {
+    try {
+      const key  = 'mpl_survey_' + Date.now();
+      const item = JSON.stringify({ savedAt: new Date().toISOString(), data });
+      sessionStorage.setItem(key, item);
+    } catch (_) {}
+  }
+
+  // ============================================================
+  //  完了画面表示
+  // ============================================================
+  function showCompletion(success, note) {
+    sections.forEach(s => s.classList.remove('active'));
+    heroBlock.style.display = 'none';
+    completionEl.classList.add('show');
+    navBar.style.display = 'none';
+    document.querySelector('.progress-shell').style.display = 'none';
+    document.querySelector('.section-tabs').style.display = 'none';
+
+    if (note) {
+      const p = completionEl.querySelector('p');
+      if (p) p.insertAdjacentHTML('beforebegin', `<p style="color:var(--accent5);font-size:12px;margin-bottom:8px">${note}</p>`);
+    }
+
+    // Pop stamps with delay
+    const stamps = document.querySelectorAll('.stamp');
+    stamps.forEach((stamp, i) => {
+      setTimeout(() => stamp.classList.add('pop'), 200 + i * 120);
+    });
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // Init
+  updateUI();
+</script>
+</body>
+</html>
